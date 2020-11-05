@@ -13,8 +13,8 @@
     ASSERT_EQ(list_push_front(&lst, -1), LIST_OK);  
 
 
-TEST(list_push_back, random_push_back_and_pop_back_test_with_resize){
-    size_t count = 1000000;
+TEST(list_push_pop, random_with_resize){
+    size_t count = 50;
     double* data = (double*)calloc(count, sizeof(double));
     List lst = {};
     list_constructor(&lst);
@@ -26,7 +26,7 @@ TEST(list_push_back, random_push_back_and_pop_back_test_with_resize){
         data[i] = tmp;
         ASSERT_EQ(list_push_back(&lst, tmp), LIST_OK);
     }
-
+    list_dump_diag(&lst, "tests/0/5.pdf");
     for(int i = count-1; i >= 0; i--){
         ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
         ASSERT_EQ(tmp, data[i]);
@@ -50,7 +50,7 @@ TEST(list_push_back, random_push_back_and_pop_back_test_with_resize){
     list_destructor(&lst);
 }
 
-TEST(list_push_back, _pub_puf_pob_pob){
+TEST(list_push_pop, back_front_back_back){
     List lst = {};
     list_constructor(&lst);
 
@@ -58,19 +58,21 @@ TEST(list_push_back, _pub_puf_pob_pob){
 
     ASSERT_EQ(list_push_back(&lst, 10), LIST_OK);
     ASSERT_EQ(list_push_front(&lst, 1), LIST_OK);
-
+    list_dump_diag(&lst, "tests/1/1.pdf");
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
+    list_dump_diag(&lst, "tests/1/2.pdf");
     
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/1/3.pdf");
 
     ASSERT_EQ(lst.size, 0);
 
     list_destructor(&lst);
 }
 
-TEST(list_push_back, _pub_puf_pof_pob){
+TEST(list_push_pop, back_front_front_back){
     List lst = {};
     list_constructor(&lst);
 
@@ -78,19 +80,22 @@ TEST(list_push_back, _pub_puf_pof_pob){
 
     ASSERT_EQ(list_push_back(&lst, 10), LIST_OK);
     ASSERT_EQ(list_push_front(&lst, 1), LIST_OK);
+    list_dump_diag(&lst, "tests/2/1.pdf");
 
     ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/2/2.pdf");
     
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
+    list_dump_diag(&lst, "tests/2/3.pdf");
 
     ASSERT_EQ(lst.size, 0);
 
     list_destructor(&lst);
 }
 
-TEST(list_push_back, _pub_puf_pob_pof){
+TEST(list_push_pop, back_front_back_front){
     List lst = {};
     list_constructor(&lst);
 
@@ -98,19 +103,22 @@ TEST(list_push_back, _pub_puf_pob_pof){
 
     ASSERT_EQ(list_push_back(&lst, 10), LIST_OK);
     ASSERT_EQ(list_push_front(&lst, 1), LIST_OK);
+    list_dump_diag(&lst, "tests/3/1.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
-    
+    list_dump_diag(&lst, "tests/3/2.pdf");
+
     ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/3/3.pdf");
 
     ASSERT_EQ(lst.size, 0);
 
     list_destructor(&lst);
 }
 
-TEST(list_push_back, _pub_puf_pof_pof){
+TEST(list_push_pop, back_front_front_front){
     List lst = {};
     list_constructor(&lst);
 
@@ -118,19 +126,22 @@ TEST(list_push_back, _pub_puf_pof_pof){
 
     ASSERT_EQ(list_push_back(&lst, 10), LIST_OK);
     ASSERT_EQ(list_push_front(&lst, 1), LIST_OK);
+    list_dump_diag(&lst, "tests/4/1.pdf");
 
     ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/4/2.pdf");
     
     ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
+    list_dump_diag(&lst, "tests/4/3.pdf");
 
     ASSERT_EQ(lst.size, 0);
 
     list_destructor(&lst);
 }
 
-TEST(list_erase, mid){
+TEST(list_erase_by_index, mid){
     List lst = {};
     list_constructor(&lst);
 
@@ -140,12 +151,15 @@ TEST(list_erase, mid){
     
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 2, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/5/1.pdf");
 
-    ASSERT_EQ(list_erase(&lst, &tmp, index), LIST_OK);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, index), LIST_OK);
     ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/5/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/5/3.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
@@ -158,7 +172,7 @@ TEST(list_erase, mid){
     list_destructor(&lst);
 }
 
-TEST(list_erase, first){
+TEST(list_erase_by_index, first){
     List lst = {};
     list_constructor(&lst);
 
@@ -168,12 +182,15 @@ TEST(list_erase, first){
 
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 1, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/6/1.pdf");
 
-    ASSERT_EQ(list_erase(&lst, &tmp, index), LIST_OK);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, index), LIST_OK);
     ASSERT_EQ(tmp, -1);
+    list_dump_diag(&lst, "tests/6/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/6/3.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
@@ -186,7 +203,7 @@ TEST(list_erase, first){
     list_destructor(&lst);
 }
 
-TEST(list_erase, last){
+TEST(list_erase_by_index, last){
     List lst = {};
     list_constructor(&lst);
 
@@ -196,9 +213,11 @@ TEST(list_erase, last){
 
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 4, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/7/1.pdf");
 
-    ASSERT_EQ(list_erase(&lst, &tmp, index), LIST_OK);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, index), LIST_OK);
     ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/7/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
@@ -215,7 +234,7 @@ TEST(list_erase, last){
     list_destructor(&lst);
 }
 
-TEST(list_erase, overflow){
+TEST(list_erase_by_index, overflow){
     List lst = {};
     list_constructor(&lst);
 
@@ -223,14 +242,14 @@ TEST(list_erase, overflow){
 
     FILL_LIST
 
-    ASSERT_EQ(list_erase(&lst, &tmp, 100), LIST_WRONG_INDEX);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, 100), LIST_WRONG_INDEX);
     ASSERT_EQ(tmp, 0);
     ASSERT_EQ(lst.size, 4);
 
     list_destructor(&lst);
 }
 
-TEST(list_erase, non_exist){
+TEST(list_erase_by_index, non_exist){
     List lst = {};
     list_constructor(&lst);
 
@@ -238,15 +257,14 @@ TEST(list_erase, non_exist){
 
     FILL_LIST
 
-    ASSERT_EQ(list_erase(&lst, &tmp, 6), LIST_WRONG_INDEX);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, 6), LIST_WRONG_INDEX);
     ASSERT_EQ(tmp, 0);
     ASSERT_EQ(lst.size, 4);
 
     list_destructor(&lst);
 }
 
-
-TEST(list_erase, fake_vertix){
+TEST(list_erase_by_index, fake_vertix){
     List lst = {};
     list_constructor(&lst);
 
@@ -254,15 +272,14 @@ TEST(list_erase, fake_vertix){
 
     FILL_LIST
 
-    ASSERT_EQ(list_erase(&lst, &tmp, 0), LIST_WRONG_INDEX);
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, 0), LIST_WRONG_INDEX);
     ASSERT_EQ(tmp, 0);
     ASSERT_EQ(lst.size, 4);
 
     list_destructor(&lst);
 }
 
-
-TEST(list_insert, last){
+TEST(list_insert_by_index, last){
     List lst = {};
     list_constructor(&lst);
 
@@ -272,12 +289,15 @@ TEST(list_insert, last){
 
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 4, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/8/1.pdf");
 
-    ASSERT_EQ(list_insert(&lst, 15, index), LIST_OK);
+    ASSERT_EQ(list_insert_by_index(&lst, 15, index), LIST_OK);
     ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/8/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 15);
+    list_dump_diag(&lst, "tests/8/3.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 12);
@@ -297,8 +317,7 @@ TEST(list_insert, last){
     list_destructor(&lst);
 }
 
-
-TEST(list_insert, mid1){
+TEST(list_insert_by_index, mid1){
     List lst = {};
     list_constructor(&lst);
 
@@ -308,12 +327,15 @@ TEST(list_insert, mid1){
 
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 1, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/9/1.pdf");
 
-    ASSERT_EQ(list_insert(&lst, 15, index), LIST_OK);
+    ASSERT_EQ(list_insert_by_index(&lst, 15, index), LIST_OK);
     ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/9/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/9/3.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
@@ -332,7 +354,7 @@ TEST(list_insert, mid1){
     list_destructor(&lst);
 }
 
-TEST(list_insert, mid2){
+TEST(list_insert_by_index, mid2){
     List lst = {};
     list_constructor(&lst);
 
@@ -342,12 +364,15 @@ TEST(list_insert, mid2){
 
     size_t index = 0;
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 2, &index), LIST_OK);
+    list_dump_diag(&lst, "tests/10/1.pdf");
 
-    ASSERT_EQ(list_insert(&lst, 15, index), LIST_OK);
+    ASSERT_EQ(list_insert_by_index(&lst, 15, index), LIST_OK);
     ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/10/2.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/10/3.pdf");
 
     ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, 10);
@@ -367,7 +392,7 @@ TEST(list_insert, mid2){
     list_destructor(&lst);
 }
 
-TEST(list_insert, overflow){
+TEST(list_insert_by_index, overflow){
     List lst = {};
     list_constructor(&lst);
 
@@ -375,14 +400,14 @@ TEST(list_insert, overflow){
 
     FILL_LIST
 
-    ASSERT_EQ(list_insert(&lst, 10, 100),  LIST_WRONG_INDEX);
+    ASSERT_EQ(list_insert_by_index(&lst, 10, 100),  LIST_WRONG_INDEX);
     ASSERT_EQ(tmp, 0);
     ASSERT_EQ(lst.size, 4);
 
     list_destructor(&lst);
 }
 
-TEST(list_insert, non_exist){
+TEST(list_insert_by_index, non_exist){
     List lst = {};
     list_constructor(&lst);
 
@@ -390,13 +415,12 @@ TEST(list_insert, non_exist){
 
     FILL_LIST
 
-    ASSERT_EQ(list_insert(&lst, 10, 6),  LIST_WRONG_INDEX);
+    ASSERT_EQ(list_insert_by_index(&lst, 10, 6),  LIST_WRONG_INDEX);
     ASSERT_EQ(tmp, 0);
     ASSERT_EQ(lst.size, 4);
 
     list_destructor(&lst);
 }
-
 
 TEST(list_create_order, empty){
     List lst = {};
@@ -415,9 +439,12 @@ TEST(list_create_order, not_empty){
     double tmp = 0;
 
     FILL_LIST
+    list_dump_diag(&lst, "tests/11/1.pdf");
 
     size_t index = 0;
     ASSERT_EQ(list_create_order(&lst), LIST_OK);
+    list_dump_diag(&lst, "tests/11/2.pdf");
+
     ASSERT_EQ(lst.size, 4);
 
     ASSERT_EQ(list_get_value_by_index(&lst, 1, &tmp), LIST_OK);
@@ -486,7 +513,6 @@ TEST(list_get_next_index, overflow){
     list_destructor(&lst);
 }
 
-
 TEST(list_get_prev_index, ok){
     List lst = {};
     list_constructor(&lst);
@@ -537,8 +563,6 @@ TEST(list_get_prev_index, underflow){
     list_destructor(&lst);
 }
 
-
-
 TEST(list_replace_value_by_index, ok){
     List lst = {};
     list_constructor(&lst);
@@ -547,6 +571,7 @@ TEST(list_replace_value_by_index, ok){
     FILL_LIST
     
     size_t index = 0;   
+    list_dump_diag(&lst, "tests/12/1.pdf");
 
     ASSERT_EQ(list_linear_find_index_by_position_if_isnt_ordered(&lst, 2, &index), LIST_OK);
     ASSERT_EQ(lst.size, 4);
@@ -554,6 +579,7 @@ TEST(list_replace_value_by_index, ok){
 
     ASSERT_EQ(list_replace_value_by_index(&lst, index, 228), LIST_OK);
     ASSERT_EQ(lst.size, 4);
+    list_dump_diag(&lst, "tests/12/2.pdf");
 
     ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
     ASSERT_EQ(tmp, -1);
@@ -615,7 +641,259 @@ TEST(list_replace_value_by_index, wrong_index){
     list_destructor(&lst);
 }
 
+TEST(list_validation, destroy_cycle){
+    List lst = {};
+    list_constructor(&lst);
+    double tmp = 0;
 
+    FILL_LIST
+    lst.data[3].next = 4;
+    
+    ASSERT_EQ(list_erase_by_index(&lst, &tmp, 1), LIST_CORRUPTED);
+
+    list_destructor(&lst);
+}
+
+TEST(list_erase_by_position, mid){
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+    
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/13/1.pdf");
+
+    ASSERT_EQ(list_erase_by_position(&lst, &tmp, 2), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+    list_dump_diag(&lst, "tests/13/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/13/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+     
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_erase_by_position, first){
+
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+    
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/14/1.pdf");
+
+    ASSERT_EQ(list_erase_by_position(&lst, &tmp, 1), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+    list_dump_diag(&lst, "tests/14/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/14/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+     
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_erase_by_position, last){
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+    
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/15/1.pdf");
+
+    ASSERT_EQ(list_erase_by_position(&lst, &tmp, 4), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/15/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+    list_dump_diag(&lst, "tests/15/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+     
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_insert_by_position, last){
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/16/1.pdf");
+
+    ASSERT_EQ(list_insert_by_position(&lst, 15, 4), LIST_OK);
+    ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/16/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 15);
+    list_dump_diag(&lst, "tests/16/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+    
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_insert_by_position, mid){
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/17/1.pdf");
+
+    ASSERT_EQ(list_insert_by_position(&lst, 15, 2), LIST_OK);
+    ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/17/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/17/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+    
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 15);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+    
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_insert_by_position, first){
+    List lst = {};
+    list_constructor(&lst);
+
+    double tmp = 0;
+
+    FILL_LIST
+
+    size_t index = 0;
+    list_dump_diag(&lst, "tests/18/1.pdf");
+
+    ASSERT_EQ(list_insert_by_position(&lst, 15, 0), LIST_OK);
+    ASSERT_EQ(lst.size, 5);
+    list_dump_diag(&lst, "tests/18/2.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 12);
+    list_dump_diag(&lst, "tests/18/3.pdf");
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 10);
+    
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, -1);
+    
+    ASSERT_EQ(list_pop_back(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 15);
+    
+    ASSERT_EQ(lst.size, 0);
+
+    list_destructor(&lst);
+}
+
+TEST(list_replace_value_by_index, all){
+    List lst = {};
+    list_constructor(&lst);
+    double tmp = 0;
+
+    FILL_LIST
+    
+    size_t index = 0;   
+    list_dump_diag(&lst, "tests/19/1.pdf");
+
+    ASSERT_EQ(list_replace_value_by_position(&lst, 1, 1), LIST_OK);
+    ASSERT_EQ(list_replace_value_by_position(&lst, 2, 2), LIST_OK);
+    ASSERT_EQ(list_replace_value_by_position(&lst, 3, 3), LIST_OK);
+    ASSERT_EQ(list_replace_value_by_position(&lst, 4, 4), LIST_OK);
+    list_dump_diag(&lst, "tests/19/2.pdf");
+
+    ASSERT_EQ(lst.size, 4);
+
+    ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 1);
+    
+    ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 2);
+
+    ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 3);
+    
+    ASSERT_EQ(list_pop_front(&lst, &tmp), LIST_OK);
+    ASSERT_EQ(tmp, 4);
+
+    ASSERT_EQ(lst.size, 0);
+
+
+    list_destructor(&lst);
+}
+
+
+// -1 1 10 12//
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
