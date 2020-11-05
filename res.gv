@@ -1,0 +1,28 @@
+digraph G{
+0[shape=record,label=" val = 0 | {<prev> prev = 4 | <next> next = 5} | ind = 0" ];
+1[shape=record,label=" val = 15 | {<prev> prev = 5 | <next> next = 2} | ind = 1" ];
+2[shape=record,label=" val = 2 | {<prev> prev = 1 | <next> next = 3} | ind = 2" ];
+3[shape=record,label=" val = 11 | {<prev> prev = 2 | <next> next = 4} | ind = 3" ];
+4[shape=record,label=" val = 14 | {<prev> prev = 3 | <next> next = 0} | ind = 4" ];
+5[shape=record,label=" val = -1 | {<prev> prev = 0 | <next> next = 1} | ind = 5" ];
+6[shape=record,label=" val = 0 | {<prev> prev = -1 | <next> next = 7} | ind = 6" ];
+7[shape=record,label=" val = 0 | {<prev> prev = -1 | <next> next = 8} | ind = 7" ];
+8[shape=record,label=" val = 0 | {<prev> prev = -1 | <next> next = 9} | ind = 8" ];
+9[shape=record,label=" val = 0 | {<prev> prev = -1 | <next> next = 10} | ind = 9" ];
+0:<next> -> 5:<prev>
+0:<prev> -> 4:<next>
+1:<next> -> 2:<prev>
+1:<prev> -> 5:<next>
+2:<next> -> 3:<prev>
+2:<prev> -> 1:<next>
+3:<next> -> 4:<prev>
+3:<prev> -> 2:<next>
+4:<next> -> 0:<prev>
+4:<prev> -> 3:<next>
+5:<next> -> 1:<prev>
+5:<prev> -> 0:<next>
+6:<next> -> 7:<prev>
+7:<next> -> 8:<prev>
+8:<next> -> 9:<prev>
+9:<next> -> 10:<prev>
+}

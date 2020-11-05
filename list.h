@@ -27,7 +27,10 @@ enum list_codes{
     LIST_INCREASE_ERROR,
     LIST_DECREASE_ERROR,
     LIST_EMPTY,
-    LIST_WRONG_INDEX
+    LIST_WRONG_INDEX,
+    LIST_ORDER_ERROR,
+    LIST_OVERFLOW,
+    LIST_UNDERFLOW
 };
 
 list_codes list_constructor(List* ls);
@@ -42,9 +45,17 @@ list_codes list_pop_front(List* ls, list_elem* value);
 list_codes list_back(List* ls, list_elem* value);
 list_codes list_front(List* ls, list_elem* value);
 
-list_codes find_index_by_position(List* ls, size_t num, size_t* res);
+list_codes list_linear_find_index_by_position_if_isnt_ordered(List* ls, size_t num, size_t* res);
+list_codes list_get_next_index(List* ls, size_t ind, size_t* res);
+list_codes list_get_prev_index(List* ls, size_t ind, size_t* res);
+list_codes list_get_value_by_index(List* ls, size_t ind, list_elem* res);
+list_codes list_replace_value_by_index(List* ls, size_t ind, list_elem val);
+
+
 list_codes list_insert(List* ls, list_elem value, size_t index);
 list_codes list_erase(List* ls, list_elem* value, size_t index);
+
+list_codes list_create_order(List* ls);
 
 void list_dump_diag(List* ls);
 void list_dump_file(List* ls);

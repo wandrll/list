@@ -118,27 +118,84 @@ list_codes list_front(List* ls, list_elem* value){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////// INDEX FUNCTIONS//////////////////////////////////////////////////////////
 
-list_codes find_index_by_position(List* ls, size_t pos, size_t* res){
+list_codes list_linear_find_index_by_position_if_isnt_ordered(List* ls, size_t pos, size_t* res){
     assert(ls != NULL);
+    if(ls->is_ordered){
+        *res = pos;
+    }else{
+        if(pos > ls->size){
+            return LIST_WRONG_INDEX;
+        }
+        size_t curr = 0;
+        if(pos < ls->size/2){
+            curr = ls->head;
+            for(int i = 1; i < pos; i++){
+                curr = ls->data[curr].next;
+            }
+        }else{
+            curr = ls->tail;
+            for(int i = 0; i < ls->size - pos; i++){
+                curr = ls->data[curr].prev;
+            }
+        }
+        *res = curr;
+    }
+    return LIST_OK;
+}
 
-    if(pos >= ls->size){
+list_codes list_get_next_index(List* ls, size_t ind, size_t* res){
+    assert(ls != NULL);
+    
+    if(ind == ls->tail){
+        return LIST_OVERFLOW;
+    }
+    if(ls->data[ind].prev == -1){
         return LIST_WRONG_INDEX;
     }
-    size_t curr = 0;
-    if(pos < ls->size/2){
-        curr = ls->head;
-        for(int i = 0; i < pos; i++){
-            curr = ls->data[curr].next;
-        }
-    }else{
-        curr = ls->tail;
-        for(int i = 0; i < ls->size - pos - 1; i++){
-            curr = ls->data[curr].prev;
-        }
+
+    *res = ls->data[ind].next;
+    return LIST_OK;
+}
+
+list_codes list_get_prev_index(List* ls, size_t ind, size_t* res){
+    assert(ls != NULL);
+    
+    if(ind == ls->head){
+        return LIST_UNDERFLOW;
+    }
+    if(ls->data[ind].prev == -1){
+        return LIST_WRONG_INDEX;
     }
 
-    *res = curr;
+    *res = ls->data[ind].prev;
+    return LIST_OK;
+}
+
+list_codes list_get_value_by_index(List* ls, size_t ind, list_elem* res){
+    assert(ls != NULL);
+    
+    if(ls->data[ind].prev == -1){
+        return LIST_WRONG_INDEX;
+    }
+
+    *res = ls->data[ind].value;
+    return LIST_OK;
+}
+
+list_codes list_replace_value_by_index(List* ls, size_t ind, list_elem val){
+    assert(ls != NULL);
+
+    if(ind > ls->capacity){
+        return LIST_OVERFLOW;
+    }
+
+    if(ls->data[ind].prev == -1){
+        return LIST_WRONG_INDEX;
+    }
+
+    ls->data[ind].value = val;
     return LIST_OK;
 }
 
@@ -186,7 +243,7 @@ static list_codes list_increase_capacity(List* ls){
 
 list_codes list_insert(List* ls, list_elem value, size_t index){
     assert(ls != NULL);
-    if(ls->data[index].prev == -1 || index > ls->capacity){
+    if(index > ls->capacity || ls->data[index].prev == -1 ){
         return LIST_WRONG_INDEX;
     }
 
@@ -202,9 +259,11 @@ list_codes list_insert(List* ls, list_elem value, size_t index){
 
     ls->data[ls->data[ls->free].next].prev = ls->free;
     ls->data[ls->data[ls->free].prev].next = ls->free;
-    printf("%ld ", ls->free);
     ls->free = next_free;
     ls->size++;
+
+    ls->head = ls->data[0].next;
+    ls->tail = ls->data[0].prev;
 
     if(ls->size == ls->capacity){
         if(list_increase_capacity(ls) == LIST_INCREASE_ERROR){
@@ -212,8 +271,7 @@ list_codes list_insert(List* ls, list_elem value, size_t index){
         }
     }
     
-    ls->head = ls->data[0].next;
-    ls->tail = ls->data[0].prev;
+    
 
     return LIST_OK;
 }
@@ -230,8 +288,15 @@ static list_codes list_decrease_capacity(List* ls){
         return LIST_INCREASE_ERROR;
     }
     
-    size_t curr = 1;
+    size_t curr = 0;
+    
+    new_data[curr].value = ls->data[0].value;
+    new_data[curr].prev = ls->size;
+    new_data[curr].next = (curr + 1)%(ls->size + 1);
+    curr++;
+    
     for(int i = ls->head; i != 0; i = ls->data[i].next){
+
         new_data[curr].value = ls->data[i].value;
         new_data[curr].prev = (curr - 1);
         new_data[curr].next = (curr + 1)%(ls->size + 1);
@@ -247,8 +312,12 @@ static list_codes list_decrease_capacity(List* ls){
     ls->capacity = (ls->capacity + 1)/2 - 1;
     free(ls->data);
     ls->data = new_data;
-    ls->head = 1;
-    ls->tail = ls->size;
+
+    ls->head = ls->data[0].next;
+    ls->tail = ls->data[0].prev;
+    
+
+
     ls->free = ls->size + 1;
     return LIST_OK;
 }
@@ -257,7 +326,7 @@ static list_codes list_decrease_capacity(List* ls){
 list_codes list_erase(List* ls, list_elem* value, size_t index){
     assert(ls != NULL);
     
-    if(ls->data[index].prev == -1 || index == 0 || index > ls->capacity){
+    if(index == 0 || index >= ls->capacity + 1 || ls->data[index].prev == -1){
         return LIST_WRONG_INDEX;
     }
 
@@ -278,10 +347,64 @@ list_codes list_erase(List* ls, list_elem* value, size_t index){
     ls->data[index].value = 0;
     ls->free = index;
     
+    ls->size--;
+    //list_dump_file(&lst);
+    ls->head = ls->data[0].next;
+    ls->tail = ls->data[0].prev;
+    
+     if(ls->size < ls->capacity/4){
+        if(list_decrease_capacity(ls) == LIST_DECREASE_ERROR){
+            return LIST_DECREASE_ERROR;
+        }
+    }
+    
+
+    return LIST_OK;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// MAKE ORDER ////////////////////////////////////////////////////////////////
+
+list_codes list_create_order(List* ls){
+    assert(ls != NULL);
+
+    Node* new_data = (Node*)calloc((ls->capacity + 1), sizeof(Node));
+    
+    if(new_data == NULL){
+        return LIST_ORDER_ERROR;
+    }
+    
+    size_t curr = 0;
+    
+    new_data[curr].value = ls->data[0].value;
+    new_data[curr].prev = ls->size;
+    new_data[curr].next = (curr + 1)%(ls->size + 1);
+    curr++;
+    
+    for(int i = ls->head; i != 0; i = ls->data[i].next){
+
+        new_data[curr].value = ls->data[i].value;
+        new_data[curr].prev = (curr - 1);
+        new_data[curr].next = (curr + 1)%(ls->size + 1);
+        curr++;
+    }
+
+    ls->is_ordered = true;
+    for(int i = curr; i < (ls->capacity + 1); i++){
+        new_data[i].prev = -1;
+        new_data[i].next = i+1;
+    }
+    
+    free(ls->data);
+
+    ls->data = new_data;
 
     ls->head = ls->data[0].next;
     ls->tail = ls->data[0].prev;
+    
 
+
+    ls->free = ls->size + 1;
     return LIST_OK;
 }
 
@@ -293,27 +416,41 @@ void list_dump_diag(List* ls){
     FILE* fp = fopen("res.gv", "w");
     fprintf(fp,"digraph G{\n");
 
+    for(int i = 0; i <= ls->capacity; i++){
+        fprintf(fp, "%d[shape=record,label=\" val = %lg | {<prev> prev = %d | <next> next = %d} | ind = %d\" ];\n",i, ls->data[i].value, ls->data[i].prev, ls->data[i].next, i);
+    }
 
-    for(int curr = 1; curr <= ls->capacity; curr++){
+    for(int curr = 0; curr <= ls->capacity; curr++){
         if(ls->data[curr].prev != -1){
-            fprintf(fp, "\"%lg \\n ind = %d\"->\"%lg \\n ind = %d\"\n[color=\"red\"]", 
-                                                                                ls->data[curr].value,
-                                                                                curr,
-                                                                                ls->data[ls->data[curr].next].value,
-                                                                                ls->data[curr].next);
-           // printf("(%lg, prev = %d next = %d)\n", ls->data[curr].value, ls->data[curr].prev, ls->data[curr].next);
-            fprintf(fp, "\"%lg \\n ind = %d\"->\"%lg \\n ind = %d\"", ls->data[curr].value,
-                                                                                curr,
-                                                                                ls->data[ls->data[curr].prev].value,
-                                                                                ls->data[curr].prev
-                                                                                );                                                                    
+            fprintf(fp, "%d:<next> -> %d:<prev>\n", curr, ls->data[curr].next);
+            fprintf(fp, "%d:<prev> -> %d:<next>\n", curr, ls->data[curr].prev);
+
+        }else{
+                fprintf(fp, "%d:<next> -> %d:<prev>\n", curr, ls->data[curr].next);
+
         }
     }
+
+    //for(int curr = 1; curr <= ls->capacity; curr++){
+    //    if(ls->data[curr].prev != -1){
+    //        fprintf(fp, "\"%lg \\n ind = %d\"->\"%lg \\n ind = %d\"\n[color=\"red\"]", 
+    //                                                                            ls->data[curr].value,
+    //                                                                            curr,
+    //                                                                            ls->data[ls->data[curr].next].value,
+    //                                                                            ls->data[curr].next);
+    //       // printf("(%lg, prev = %d next = %d)\n", ls->data[curr].value, ls->data[curr].prev, ls->data[curr].next);
+    //        fprintf(fp, "\"%lg \\n ind = %d\"->\"%lg \\n ind = %d\"", ls->data[curr].value,
+    //                                                                            curr,
+    //                                                                            ls->data[ls->data[curr].prev].value,
+    //                                                                            ls->data[curr].prev
+    //                                                                            );                                                                    
+    //    }
+    //}
 
 
     fprintf(fp,"}\n");
     fclose(fp);
-    system("dot -Tpng res.gv -ores1.png");
+    system("circo -Tpng res.gv -ores1.png");
 }
 
 

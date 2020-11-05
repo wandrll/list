@@ -7,11 +7,17 @@ all: list
 list: list.o main.o list.h
 	g++ $(LDFLAGS) list.o main.o -o list 
 
+test: test.o list.o list.h
+	g++ $(LDFLAGS) list.o test.o -o test -lgtest -lgtest_main -lpthread
+
 main.o: main.cpp list.h
 	g++ $(CFLAGS) main.cpp
 
 list.o: list.cpp list.h
 	g++ $(CFLAGS) list.cpp
+
+test.o: test.cpp list.h
+	g++ $(CFLAGS) test.cpp -lgtest -lgtest_main -lpthread
 
 clean:
 	rm -rf *.o 
