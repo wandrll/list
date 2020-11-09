@@ -1,3 +1,4 @@
+///\file
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -220,6 +221,8 @@ list_codes list_get_prev_index(List* ls, size_t ind, size_t* res){
     return LIST_OK;
 }
 
+
+
 list_codes list_get_value_by_index(List* ls, size_t ind, list_elem* res){
     IF_DEBUG_ON(
         if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
@@ -251,9 +254,6 @@ list_codes list_get_value_by_position(List* ls, size_t pos, list_elem* res){
         return list_get_value_by_index(ls, ind, res);
     }
 }
-
-
-
 
 
 list_codes list_replace_value_by_index(List* ls, size_t ind, list_elem val){
@@ -296,13 +296,6 @@ list_codes list_replace_value_by_position(List* ls, size_t pos, list_elem val){
 ///////////////////////////////INSERT///////////////////////////////////////////////////////////////////////
 
 static list_codes list_increase_capacity(List* ls){
-    IF_DEBUG_ON(
-        if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
-            return LIST_CORRUPTED;
-
-        }
-    )
-
     Node* new_data = (Node*)calloc(2*(ls->capacity + 1), sizeof(Node));
     
     if(new_data == NULL){
@@ -331,6 +324,12 @@ static list_codes list_increase_capacity(List* ls){
     ls->free = ls->size + 1;
     ls->data[0].next = 1;
     ls->data[0].prev = ls->size;
+    IF_DEBUG_ON(
+        if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
+            return LIST_CORRUPTED;
+
+        }
+    )
     return LIST_OK;
 }
 
@@ -383,7 +382,6 @@ list_codes list_insert_by_position(List* ls, list_elem value, size_t position){
 
     size_t ind = 0;
     list_codes code = list_linear_find_index_by_position_if_isnt_ordered(ls, position, &ind);
-    printf("////////////////  %ld //////////////\n", ind);
     if(code != LIST_OK){
         return code;
     }else{
@@ -395,12 +393,6 @@ list_codes list_insert_by_position(List* ls, list_elem value, size_t position){
 ///////////////////////////////ERASE////////////////////////////////////////////////////////////////////////
 
 static list_codes list_decrease_capacity(List* ls){
-    IF_DEBUG_ON(
-        if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
-            return LIST_CORRUPTED;
-
-        }
-    )
 
     Node* new_data = (Node*)calloc((ls->capacity + 1)/2, sizeof(Node));
     
@@ -439,6 +431,12 @@ static list_codes list_decrease_capacity(List* ls){
 
 
     ls->free = ls->size + 1;
+    IF_DEBUG_ON(
+        if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
+            return LIST_CORRUPTED;
+
+        }
+    )
     return LIST_OK;
 }
 
@@ -473,7 +471,6 @@ list_codes list_erase_by_index(List* ls, list_elem* value, size_t index){
     ls->free = index;
     
     ls->size--;
-    //list_dump_file(&lst);
     ls->head = ls->data[0].next;
     ls->tail = ls->data[0].prev;
     
@@ -619,12 +616,12 @@ void list_dump_diag(List* ls, const char* file){
 
 void list_dump_file(List* ls, const char* file){
     FILE* fp = fopen(file, "a");
-    fprintf(fp,"capacity: %ld\n size: %ld\n head: %ld\n tail: %ld\n free: %ld\n is ordered: %d\n", ls->capacity,
-                                                                                               ls->size,
-                                                                                               ls->head, 
-                                                                                               ls->tail, 
-                                                                                               ls->free, 
-                                                                                               ls->is_ordered);
+    fprintf(fp,"\ncapacity: %ld\n size: %ld\n head: %ld\n tail: %ld\n free: %ld\n is ordered: %d\n", ls->capacity,
+                                                                                                   ls->size,
+                                                                                                   ls->head, 
+                                                                                                   ls->tail, 
+                                                                                                   ls->free, 
+                                                                                                   ls->is_ordered);
 
 
     for(int curr = 0; curr <= ls->capacity; curr++){
@@ -690,36 +687,57 @@ static bool is_pointer_valid(void* data){
     }
 }
 
+static bool is_parametrs_ok(List* ls){
+    if(ls->size > ls->capacity || ls-> head > ls->capacity || ls->tail > ls->capacity || ls->free > ls->capacity){
+        return false;
+    }else{
+        return true;
+    }
+}
+
 static void print_log_data(FILE* fp, Log_data* log){
     fprintf(fp, "file:%s\n function: %s\n line: %d\n", log->file, log->func, log->line);
 }
 
 
 bool list_validation(List* ls, Log_data* log){
-    FILE* fp = fopen("error_log.txt", "w");
+    FILE* fp = fopen("error_log.txt", "a");
     if(!is_pointer_valid((void*)ls)){
         print_log_data(fp, log);
-        fprintf(fp, "Non valid list pointer: %p\n",ls);
+        fprintf(fp, "\nNon valid list pointer: %p\n",ls);
         free(log);
+        fclose(fp);
         return false;
     }
     if(!is_pointer_valid((void*)ls->data)){
         print_log_data(fp, log);
-        fprintf(fp, "Non valid list_data pointer: %p\n",ls->data);
+        fprintf(fp, "\nNon valid list_data pointer: %p\n",ls->data);
         free(log);
+        fclose(fp);
+        return false;
+    }
+   
+    if(!is_parametrs_ok(ls)){
+        print_log_data(fp, log);
+        fprintf(fp, "\nParametrs of list have corrupted: size: %ld\ncapacity:%ld\nhead:%ld\ntail:%ld\nfree:%ld\n",ls->size, ls->capacity, ls->head, ls->tail, ls->free);
+        free(log);
+        fclose(fp);
         return false;
     }
 
+
     if(!is_reversed_cycle_ok(ls) || !is_straight_cycle_ok(ls)){
         print_log_data(fp, log);
-        fprintf(fp, "Cycle in list was corrupted, check error.pdf");
+        fprintf(fp, "\nCycle in list was corrupted, check error.pdf");
         list_dump_diag(ls, "error.pdf");
         free(log);
+        fclose(fp);
+        list_dump_file(ls, "error_log.txt");
         return false;
     }
 
     free(log);
-
+    fclose(fp);
     return true;
 
 }
@@ -732,7 +750,5 @@ Log_data* create_log_data(const char* file, const char* func, int line){
     lg->line = line;
     return lg;
 }
-
-
 
 

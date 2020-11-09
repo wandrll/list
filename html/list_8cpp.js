@@ -1,0 +1,27 @@
+var list_8cpp =
+[
+    [ "create_log_data", "list_8cpp.html#a81228195fe4d8b3b83d68ef646ebc098", null ],
+    [ "list_back", "list_8cpp.html#a9cbd1fc12d10f086cda312d461b6503b", null ],
+    [ "list_constructor", "list_8cpp.html#a6b3d0484fc682e3072fd14b43745970a", null ],
+    [ "list_create_order", "list_8cpp.html#a99fd683f1ebec54df5acddeec02bb979", null ],
+    [ "list_destructor", "list_8cpp.html#ac8f1715981f8acc3fa9bffd00fdf497f", null ],
+    [ "list_dump_diag", "list_8cpp.html#a0252edf8bc4e4516a0d72e02ceaaee22", null ],
+    [ "list_dump_file", "list_8cpp.html#a65373cb5f36856b5f95908301963ca55", null ],
+    [ "list_erase_by_index", "list_8cpp.html#aa327a1c2fac4fe8d367bc7167fab0455", null ],
+    [ "list_erase_by_position", "list_8cpp.html#a69c5ae996c11aef70d8703861e6d70a0", null ],
+    [ "list_front", "list_8cpp.html#abb67925f8a340613d09403d4a6c2efc1", null ],
+    [ "list_get_next_index", "list_8cpp.html#ac7de255a23ac132bc660fde019c4342a", null ],
+    [ "list_get_prev_index", "list_8cpp.html#a1f4acc0f31480e24d9d7b1a472bfc32e", null ],
+    [ "list_get_value_by_index", "list_8cpp.html#a89a5fcf4e170db3a0f9a283db83b0d27", null ],
+    [ "list_get_value_by_position", "list_8cpp.html#a63e4c4fea1c126572cffba6921828db6", null ],
+    [ "list_insert_by_index", "list_8cpp.html#aadd50ab9fa832d2b37e8365d984bbd79", null ],
+    [ "list_insert_by_position", "list_8cpp.html#adc34139447531e1ffb013a69d8347e16", null ],
+    [ "list_linear_find_index_by_position_if_isnt_ordered", "list_8cpp.html#a6cddf4f6190ff9be219ea52975760dea", null ],
+    [ "list_pop_back", "list_8cpp.html#aa53e7dd73f135b088b9e7c0f1c78336a", null ],
+    [ "list_pop_front", "list_8cpp.html#a434f33f190c79ea2ed0e02806e6ac90f", null ],
+    [ "list_push_back", "list_8cpp.html#aee7a66b0b1b356cdd4b37dece80a01e6", null ],
+    [ "list_push_front", "list_8cpp.html#a47e41a30fd72219f866e49a63626080d", null ],
+    [ "list_replace_value_by_index", "list_8cpp.html#a2e65488dc7740ae4d892d3374b4b81c3", null ],
+    [ "list_replace_value_by_position", "list_8cpp.html#a722080865093519ba2127300160bc7a4", null ],
+    [ "list_validation", "list_8cpp.html#acf9d02b8f2457f89566020b981abd0f0", null ]
+];

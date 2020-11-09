@@ -12,9 +12,9 @@
     ASSERT_EQ(list_push_back(&lst, 12), LIST_OK);   \
     ASSERT_EQ(list_push_front(&lst, -1), LIST_OK);  
 
-
+//0
 TEST(list_push_pop, random_with_resize){
-    size_t count = 50;
+    size_t count = 300;
     double* data = (double*)calloc(count, sizeof(double));
     List lst = {};
     list_constructor(&lst);
@@ -50,6 +50,7 @@ TEST(list_push_pop, random_with_resize){
     list_destructor(&lst);
 }
 
+//1
 TEST(list_push_pop, back_front_back_back){
     List lst = {};
     list_constructor(&lst);
@@ -72,6 +73,7 @@ TEST(list_push_pop, back_front_back_back){
     list_destructor(&lst);
 }
 
+//2
 TEST(list_push_pop, back_front_front_back){
     List lst = {};
     list_constructor(&lst);
@@ -95,6 +97,7 @@ TEST(list_push_pop, back_front_front_back){
     list_destructor(&lst);
 }
 
+//3
 TEST(list_push_pop, back_front_back_front){
     List lst = {};
     list_constructor(&lst);
@@ -118,6 +121,7 @@ TEST(list_push_pop, back_front_back_front){
     list_destructor(&lst);
 }
 
+//4
 TEST(list_push_pop, back_front_front_front){
     List lst = {};
     list_constructor(&lst);
@@ -141,6 +145,7 @@ TEST(list_push_pop, back_front_front_front){
     list_destructor(&lst);
 }
 
+//5
 TEST(list_erase_by_index, mid){
     List lst = {};
     list_constructor(&lst);
@@ -172,6 +177,7 @@ TEST(list_erase_by_index, mid){
     list_destructor(&lst);
 }
 
+//6
 TEST(list_erase_by_index, first){
     List lst = {};
     list_constructor(&lst);
@@ -203,6 +209,7 @@ TEST(list_erase_by_index, first){
     list_destructor(&lst);
 }
 
+//7
 TEST(list_erase_by_index, last){
     List lst = {};
     list_constructor(&lst);
@@ -279,6 +286,7 @@ TEST(list_erase_by_index, fake_vertix){
     list_destructor(&lst);
 }
 
+//8
 TEST(list_insert_by_index, last){
     List lst = {};
     list_constructor(&lst);
@@ -316,7 +324,8 @@ TEST(list_insert_by_index, last){
 
     list_destructor(&lst);
 }
-
+ 
+//9
 TEST(list_insert_by_index, mid1){
     List lst = {};
     list_constructor(&lst);
@@ -354,6 +363,7 @@ TEST(list_insert_by_index, mid1){
     list_destructor(&lst);
 }
 
+//10
 TEST(list_insert_by_index, mid2){
     List lst = {};
     list_constructor(&lst);
@@ -432,6 +442,7 @@ TEST(list_create_order, empty){
     list_destructor(&lst);
 }
 
+//11
 TEST(list_create_order, not_empty){
     List lst = {};
     list_constructor(&lst);
@@ -563,6 +574,7 @@ TEST(list_get_prev_index, underflow){
     list_destructor(&lst);
 }
 
+//12
 TEST(list_replace_value_by_index, ok){
     List lst = {};
     list_constructor(&lst);
@@ -654,6 +666,7 @@ TEST(list_validation, destroy_cycle){
     list_destructor(&lst);
 }
 
+//13
 TEST(list_erase_by_position, mid){
     List lst = {};
     list_constructor(&lst);
@@ -684,6 +697,7 @@ TEST(list_erase_by_position, mid){
     list_destructor(&lst);
 }
 
+//14
 TEST(list_erase_by_position, first){
 
     List lst = {};
@@ -715,6 +729,7 @@ TEST(list_erase_by_position, first){
     list_destructor(&lst);
 }
 
+//15
 TEST(list_erase_by_position, last){
     List lst = {};
     list_constructor(&lst);
@@ -745,6 +760,7 @@ TEST(list_erase_by_position, last){
     list_destructor(&lst);
 }
 
+//16
 TEST(list_insert_by_position, last){
     List lst = {};
     list_constructor(&lst);
@@ -782,6 +798,7 @@ TEST(list_insert_by_position, last){
     list_destructor(&lst);
 }
 
+//17
 TEST(list_insert_by_position, mid){
     List lst = {};
     list_constructor(&lst);
@@ -819,6 +836,7 @@ TEST(list_insert_by_position, mid){
     list_destructor(&lst);
 }
 
+//18
 TEST(list_insert_by_position, first){
     List lst = {};
     list_constructor(&lst);
@@ -856,7 +874,8 @@ TEST(list_insert_by_position, first){
     list_destructor(&lst);
 }
 
-TEST(list_replace_value_by_index, all){
+//19
+TEST(list_replace_value_by_position, all){
     List lst = {};
     list_constructor(&lst);
     double tmp = 0;
