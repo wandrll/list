@@ -302,16 +302,13 @@ static list_codes list_increase_capacity(List* ls){
         return LIST_INCREASE_ERROR;
     }
     
-    int curr = 1;
-    for(int i = ls->head; i != 0; i = ls->data[i].next){
-        new_data[curr].value = ls->data[i].value;
-        new_data[curr].prev = (curr - 1);
-        new_data[curr].next = (curr + 1)%(ls->size + 1);
-        curr++;
+    for(int i = 0; i <= ls->capacity; i++){
+        new_data[i].value = ls->data[i].value;
+        new_data[i].prev = ls->data[i].prev;
+        new_data[i].next = ls->data[i].next;
     }
 
-    ls->is_ordered = true;
-    for(int i = curr; i < 2*(ls->capacity + 1); i++){
+    for(int i = ls->capacity+1; i < 2*(ls->capacity + 1); i++){
         new_data[i].prev = -1;
         new_data[i].next = i+1;
     }
@@ -319,11 +316,7 @@ static list_codes list_increase_capacity(List* ls){
     ls->capacity = 2*(ls->capacity + 1) - 1;
     free(ls->data);
     ls->data = new_data;
-    ls->head = 1;
-    ls->tail = ls->size;
-    ls->free = ls->size + 1;
-    ls->data[0].next = 1;
-    ls->data[0].prev = ls->size;
+    
     IF_DEBUG_ON(
         if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
             return LIST_CORRUPTED;
@@ -393,30 +386,23 @@ list_codes list_insert_by_position(List* ls, list_elem value, size_t position){
 ///////////////////////////////ERASE////////////////////////////////////////////////////////////////////////
 
 static list_codes list_decrease_capacity(List* ls){
-
     Node* new_data = (Node*)calloc((ls->capacity + 1)/2, sizeof(Node));
     
+    assert(ls->is_ordered != false);
+
     if(new_data == NULL){
         return LIST_INCREASE_ERROR;
     }
     
     size_t curr = 0;
     
-    new_data[curr].value = ls->data[0].value;
-    new_data[curr].prev = ls->size;
-    new_data[curr].next = (curr + 1)%(ls->size + 1);
-    curr++;
-    
-    for(int i = ls->head; i != 0; i = ls->data[i].next){
-
-        new_data[curr].value = ls->data[i].value;
-        new_data[curr].prev = (curr - 1);
-        new_data[curr].next = (curr + 1)%(ls->size + 1);
-        curr++;
+    for(int i = 0; i <= ls->size; i++){
+        new_data[i].value = ls->data[i].value;
+        new_data[i].prev = ls->data[i].prev;
+        new_data[i].next = ls->data[i].next;
     }
 
-    ls->is_ordered = true;
-    for(int i = curr; i < (ls->capacity + 1)/2; i++){
+    for(int i = ls->size + 1; i < (ls->capacity + 1)/2; i++){
         new_data[i].prev = -1;
         new_data[i].next = i+1;
     }
@@ -425,12 +411,6 @@ static list_codes list_decrease_capacity(List* ls){
     free(ls->data);
     ls->data = new_data;
 
-    ls->head = ls->data[0].next;
-    ls->tail = ls->data[0].prev;
-    
-
-
-    ls->free = ls->size + 1;
     IF_DEBUG_ON(
         if(!list_validation(ls, create_log_data(__FILE__, __FUNCTION__, __LINE__))){
             return LIST_CORRUPTED;
@@ -474,7 +454,7 @@ list_codes list_erase_by_index(List* ls, list_elem* value, size_t index){
     ls->head = ls->data[0].next;
     ls->tail = ls->data[0].prev;
     
-     if(ls->size < ls->capacity/4){
+     if(ls->size < ls->capacity/4 && ls->is_ordered){
         if(list_decrease_capacity(ls) == LIST_DECREASE_ERROR){
             return LIST_DECREASE_ERROR;
         }
