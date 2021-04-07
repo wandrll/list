@@ -15,3 +15,6 @@ If you want check it - explore "tests" folder
 
 ## Debug mode
 In debug mode after evry list function list will be checked, if somehow list was corrupted wil be created error.pdf and error_log.txt files, which represent corrupted list
+
+## Documentation
+You can also check badly written documentation [here](https://wandrll.github.io/list/html/index.html)
